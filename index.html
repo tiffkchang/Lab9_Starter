@@ -87,7 +87,22 @@
     </section>
   </main>
 
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
   <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "2752271d4ed942ceb63cabfb44f360c1"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>
+                        
+
+  <script>
+    class CalculatorError extends Error {
+      constructor(msg) {
+        super(msg);
+        this.name = 'CalculatorError';
+      }
+    }
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
       e.preventDefault();
@@ -95,13 +110,50 @@
       let firstNum = document.querySelector('#first-num').value;
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      try {
+        output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      } catch (err) {
+        throw new CalculatorError('Calculator Error: ' + err);
+      } finally {
+        console.log('Calculation complete.');
+      }
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
+    window.onerror = (message, source, lineno, colno, error) => {
+      console.log('Global Error');
+    }
+
+    const constant = 1;
+
     // Start your code here
     // You may move this JS to another file if you wish
+    errorBtns[0].addEventListener('click', () => console.log('Console Log'));
+    errorBtns[1].addEventListener('click', () => console.error('Console Error'));
+    errorBtns[2].addEventListener('click', () => console.count('Console Count'));
+    errorBtns[3].addEventListener('click', () => console.warn('Console Warn'));
+    errorBtns[4].addEventListener('click', () => console.assert(1 == 2, {errorMsg: 'Console Assert'}));
+    errorBtns[5].addEventListener('click', () => console.clear('Console Clear'));
+    errorBtns[6].addEventListener('click', () => console.dir({ConsoleDir: 'Console Dir'}));
+    errorBtns[7].addEventListener('click', () => console.dirxml({Consoledirxml: 'Console dirxml'}));
+    errorBtns[8].addEventListener('click', () => console.group('Console Group Start'));
+    errorBtns[9].addEventListener('click', () => console.groupEnd('Console Group End'));
+    errorBtns[10].addEventListener('click', () => console.table(['Console', 'Table']));
+    errorBtns[11].addEventListener('click', () => console.time('Timer'));
+    errorBtns[12].addEventListener('click', () => console.timeEnd('Timer'));
+    errorBtns[13].addEventListener('click', () => {
+      function trace() {
+        console.trace('Console Trace');
+      }
+      trace();
+    });
+    errorBtns[14].addEventListener('click', () => {try {
+      constant = 2
+    } catch(err) {
+      throw err;
+    }});
+
   </script>
 </body>
 
